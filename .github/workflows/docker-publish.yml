@@ -67,7 +67,7 @@ jobs:
 
       - name: Verify deployed ports are reachable
         run: |
-          for port in 80 8000; do
+          for port in 80; do
             if nc -z -w5 "${{ secrets.GCP_VM_HOST }}" "$port"; then
               echo "✅ Port $port is open on ${{ secrets.GCP_VM_HOST }}"
             else
@@ -80,4 +80,3 @@ jobs:
         run: |
           echo "## 🚀 Deployed" >> "$GITHUB_STEP_SUMMARY"
           echo "- Frontend: http://${{ secrets.GCP_VM_HOST }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Backend API: http://${{ secrets.GCP_VM_HOST }}:8000/docs" >> "$GITHUB_STEP_SUMMARY"
