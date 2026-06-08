@@ -82,7 +82,7 @@ jobs:
             chmod 600 .env
             echo "$GHCR_TOKEN" | docker login "$REGISTRY" -u "$GITHUB_ACTOR" --password-stdin
             docker compose pull
-            docker compose up -d
+            docker compose up -d --force-recreate
             docker image prune -f
 
       - name: Verify deployed ports are reachable
