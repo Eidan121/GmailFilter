@@ -154,25 +154,21 @@ deploys to a Compute Engine VM **without ever baking secrets into the image**:
 
 1. Authenticates to GCP with a service account (`google-github-actions/auth`)
 2. Copies `docker-compose.yml` to the VM via `gcloud compute scp`
-3. SSHes in via `gcloud compute ssh` (IAP tunnel — no public SSH port needed) and:
-   - Pulls each secret fresh from **Secret Manager** (`gcloud secrets versions access latest`)
-     and writes them to `~/gmailfilter/.env` for that run
-   - Logs into GHCR, `docker compose pull && up -d`
+3. SSHes in via `gcloud compute ssh` (IAP tunnel — no public SSH port needed), builds `.env`
+   on the fly from **GitHub Actions secrets** (base64-piped over SSH so it never appears in
+   plaintext in logs), then logs into GHCR and runs `docker compose pull && up -d`
 
-Secrets live in Secret Manager, not in the image, not in GitHub, and not persisted in any
-build artifact — only injected into `.env` on the VM at deploy time.
+App secrets are stored once in GitHub (encrypted at rest by GitHub, never exposed in logs) and
+written fresh to `.env` on the VM at deploy time — never baked into the image.
 
 **One-time GCP setup:**
 
 1. Create a Compute Engine VM (Ubuntu 22.04, e2-small/medium, static external IP, allow HTTP/HTTPS)
 2. SSH in once and install Docker + the Compose plugin
-3. Store each secret in **Secret Manager** (Console → Security → Secret Manager → Create secret):
-   `ANTHROPIC_API_KEY`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `TOKEN_ENCRYPTION_KEY`
-4. Create a service account with `roles/secretmanager.secretAccessor`,
-   `roles/compute.osLogin` (or equivalent SSH access), and `roles/iap.tunnelResourceAccessor`;
-   download its JSON key
-5. Update your Google OAuth client's redirect URI to point at the VM's address
-6. (Recommended) put a domain + HTTPS in front (Caddy/nginx + Let's Encrypt) — Google requires
+3. Create a service account with `roles/compute.osLogin` (or equivalent SSH access) and
+   `roles/iap.tunnelResourceAccessor`; download its JSON key
+4. Update your Google OAuth client's redirect URI to point at the VM's address
+5. (Recommended) put a domain + HTTPS in front (Caddy/nginx + Let's Encrypt) — Google requires
    HTTPS redirect URIs for non-localhost OAuth clients
 
 **Required GitHub Actions secrets** (Settings → Secrets and variables → Actions):
@@ -186,6 +182,10 @@ build artifact — only injected into `.env` on the VM at deploy time.
 | `GCP_VM_USER` | SSH username on the VM |
 | `GCP_VM_HOST` | VM's external IP or domain (used only for the post-deploy port check) |
 | `GHCR_TOKEN` | A GitHub PAT with `read:packages`, used by the VM to pull images |
+| `ANTHROPIC_API_KEY` | Your Anthropic API key — written into the VM's `.env` at deploy time |
+| `GOOGLE_CLIENT_ID` | Your Google OAuth client ID — same |
+| `GOOGLE_CLIENT_SECRET` | Your Google OAuth client secret — same |
+| `TOKEN_ENCRYPTION_KEY` | Fernet key for encrypting stored Gmail tokens — same |
 
 ## 🛠️ Local development (without Docker)
 

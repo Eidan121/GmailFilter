@@ -59,20 +59,22 @@ jobs:
             --zone "${{ secrets.GCP_VM_ZONE }}" \
             --tunnel-through-iap
 
-      - name: Deploy & inject secrets from Secret Manager
+      - name: Deploy & inject secrets from GitHub Actions secrets
+        env:
+          ENV_B64: ${{ toJSON(format('ANTHROPIC_API_KEY={0}\nGOOGLE_CLIENT_ID={1}\nGOOGLE_CLIENT_SECRET={2}\nTOKEN_ENCRYPTION_KEY={3}\n', secrets.ANTHROPIC_API_KEY, secrets.GOOGLE_CLIENT_ID, secrets.GOOGLE_CLIENT_SECRET, secrets.TOKEN_ENCRYPTION_KEY)) }}
         run: |
+          # Build .env content from GitHub secrets and ship it base64-encoded
+          # so it never appears in plaintext in logs or shell history.
+          ENV_CONTENT_B64=$(printf '%s' "$ENV_B64" | sed -e 's/^"//' -e 's/"$//' | base64 -w0)
+
           gcloud compute ssh "${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_NAME }}" \
             --zone "${{ secrets.GCP_VM_ZONE }}" \
             --tunnel-through-iap \
             --command="
               set -e
               mkdir -p ~/gmailfilter && cd ~/gmailfilter
-              cat > .env <<ENV
-          ANTHROPIC_API_KEY=\$(gcloud secrets versions access latest --secret=ANTHROPIC_API_KEY)
-          GOOGLE_CLIENT_ID=\$(gcloud secrets versions access latest --secret=GOOGLE_CLIENT_ID)
-          GOOGLE_CLIENT_SECRET=\$(gcloud secrets versions access latest --secret=GOOGLE_CLIENT_SECRET)
-          TOKEN_ENCRYPTION_KEY=\$(gcloud secrets versions access latest --secret=TOKEN_ENCRYPTION_KEY)
-          ENV
+              echo '${ENV_CONTENT_B64}' | base64 -d > .env
+              chmod 600 .env
               echo '${{ secrets.GHCR_TOKEN }}' | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
               docker compose pull
               docker compose up -d
