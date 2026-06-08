@@ -22,7 +22,7 @@ frontend/   TypeScript/React Vite app (pnpm-managed) — dashboard, filter/sugge
 
 ## Backend (`backend/app/`)
 
-Stack: FastAPI, SQLAlchemy 2.0 + Alembic (SQLite), Pydantic v2, APScheduler, google-api-python-client,
+Stack: FastAPI, SQLAlchemy 2.0 + Alembic (Postgres), Pydantic v2, APScheduler, google-api-python-client,
 Anthropic SDK (`claude-sonnet-4-6`).
 
 - **routers/** — API endpoints
@@ -75,12 +75,13 @@ pnpm build      # production build → frontend/dist/
 
 ### Docker (all services)
 ```bash
-cp .env.example .env   # set ANTHROPIC_API_KEY (and optionally API_HOST/PORT, FRONTEND_ORIGIN,
-                       # FLOOD_THRESHOLD, SCAN_INTERVAL_HOURS)
+cp .env.example .env   # set ANTHROPIC_API_KEY, GOOGLE_CLIENT_ID/SECRET (and optionally
+                       # POSTGRES_*, API_HOST/PORT, FRONTEND_ORIGIN, FLOOD_THRESHOLD, SCAN_INTERVAL_HOURS)
 docker compose up --build
 ```
-Services: `backend` (FastAPI, :8000), `scanner` (daemon), `frontend` (built app, :80).
-They share the `gmail_data` volume mounted at `~/.gmail_filter_app` for OAuth tokens/DB.
+Services: `db` (Postgres 16, :5432), `backend` (FastAPI, :8000), `scanner` (daemon), `frontend`
+(built app, :80). `postgres_data` persists the database; `gmail_data` (mounted at
+`~/.gmail_filter_app`) persists the token-encryption key.
 
 ## One-time OAuth Setup (operator only — end users never see this)
 Set `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` in `.env`.
@@ -91,7 +92,10 @@ End users connecting their Gmail account just click "Connect with Google" in the
 Google's normal consent screen — they never interact with the client ID/secret.
 
 ## Architecture Notes
-- Credentials stored at `~/.gmail_filter_app/` (`accounts.db`, `token.key`)
+- DB is **Postgres** (`db` service in docker-compose, `postgres:16-alpine`), connected via
+  `DATABASE_URL` (`postgresql+psycopg://...`); SQLAlchemy + Alembic as before. For local
+  (non-Docker) dev, point `DATABASE_URL` at the compose Postgres exposed on `localhost:5432`.
+- `~/.gmail_filter_app/` now only holds `token.key` (the Fernet key for encrypting stored tokens)
 - Gmail OAuth tokens are stored **encrypted in the database** (`gmail_accounts.encrypted_token`,
   Fernet-encrypted with the key at `token.key` or `TOKEN_ENCRYPTION_KEY`), not on disk as files.
   Each time an account is (re)connected, Google forces a fresh consent screen and the stored token
@@ -102,5 +106,6 @@ Google's normal consent screen — they never interact with the client ID/secret
   (`filter_service.py` handles this)
 - Claude (`claude-sonnet-4-6`, set via `ANTHROPIC_API_KEY`) is called from `ai_suggester.py`
   with tool use to turn flood-detection data into structured filter suggestions
-- DB is SQLite; migrations: `0001_initial.py`, `0002_db_backed_tokens.py` (moved tokens from
-  files to an encrypted DB column)
+- Migrations: `0001_initial.py`, `0002_db_backed_tokens.py` (moved tokens from files to an
+  encrypted DB column). Both run unchanged against Postgres — no schema migration was needed
+  for the SQLite→Postgres switch, just a different `DATABASE_URL` / engine.
