@@ -5,9 +5,7 @@ from app.config import settings
 
 
 def get_engine():
-    settings.data_dir.mkdir(parents=True, exist_ok=True)
-    url = f"sqlite:///{settings.db_path}"
-    return create_engine(url, connect_args={"check_same_thread": False})
+    return create_engine(settings.database_url)
 
 
 engine = get_engine()

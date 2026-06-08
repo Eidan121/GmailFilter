@@ -1,4 +1,21 @@
 services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-gmailfilter}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-gmailfilter}
+      - POSTGRES_DB=${POSTGRES_DB:-gmailfilter}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gmailfilter}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   backend:
     image: ghcr.io/eidan121/gmailfilter-backend:latest
     build:
@@ -11,6 +28,10 @@ services:
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - FRONTEND_ORIGIN=http://localhost:5173
+      - DATABASE_URL=postgresql+psycopg://${POSTGRES_USER:-gmailfilter}:${POSTGRES_PASSWORD:-gmailfilter}@db:5432/${POSTGRES_DB:-gmailfilter}
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
   scanner:
@@ -20,9 +41,13 @@ services:
       - gmail_data:/root/.gmail_filter_app
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
-    restart: unless-stopped
+      - DATABASE_URL=postgresql+psycopg://${POSTGRES_USER:-gmailfilter}:${POSTGRES_PASSWORD:-gmailfilter}@db:5432/${POSTGRES_DB:-gmailfilter}
     depends_on:
-      - backend
+      db:
+        condition: service_healthy
+      backend:
+        condition: service_started
+    restart: unless-stopped
 
   frontend:
     image: ghcr.io/eidan121/gmailfilter-frontend:latest
@@ -37,3 +62,4 @@ services:
 
 volumes:
   gmail_data:
+  postgres_data:

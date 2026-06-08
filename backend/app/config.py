@@ -7,9 +7,10 @@ class Settings(BaseSettings):
 
     data_dir: Path = Path.home() / ".gmail_filter_app"
 
-    @property
-    def db_path(self) -> Path:
-        return self.data_dir / "accounts.db"
+    # Postgres connection string. The default targets the `db` service from
+    # docker-compose; override via .env for local (non-Docker) development,
+    # e.g. postgresql+psycopg://gmailfilter:gmailfilter@localhost:5432/gmailfilter
+    database_url: str = "postgresql+psycopg://gmailfilter:gmailfilter@db:5432/gmailfilter"
 
     @property
     def token_key_path(self) -> Path:

@@ -55,7 +55,7 @@ migrate:
 
 # Create ~/.gmail_filter_app dirs + copy .env if missing
 init-dirs:
-	mkdir -p ~/.gmail_filter_app/tokens
+	mkdir -p ~/.gmail_filter_app
 	@test -f .env || (cp .env.example .env && echo "Created .env — set ANTHROPIC_API_KEY inside")
 
 # ── Development ────────────────────────────────────────────────────────────────
