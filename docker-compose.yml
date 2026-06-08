@@ -27,6 +27,9 @@ services:
       - gmail_data:/root/.gmail_filter_app
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - TOKEN_ENCRYPTION_KEY=${TOKEN_ENCRYPTION_KEY:-}
       - FRONTEND_ORIGIN=http://localhost:5173
       - DATABASE_URL=postgresql+psycopg://${POSTGRES_USER:-gmailfilter}:${POSTGRES_PASSWORD:-gmailfilter}@db:5432/${POSTGRES_DB:-gmailfilter}
     depends_on:
@@ -41,6 +44,9 @@ services:
       - gmail_data:/root/.gmail_filter_app
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - TOKEN_ENCRYPTION_KEY=${TOKEN_ENCRYPTION_KEY:-}
       - DATABASE_URL=postgresql+psycopg://${POSTGRES_USER:-gmailfilter}:${POSTGRES_PASSWORD:-gmailfilter}@db:5432/${POSTGRES_DB:-gmailfilter}
     depends_on:
       db:
