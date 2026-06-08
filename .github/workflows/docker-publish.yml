@@ -60,7 +60,7 @@ jobs:
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           TOKEN_ENCRYPTION_KEY: ${{ secrets.TOKEN_ENCRYPTION_KEY }}
-          OAUTH_REDIRECT_BASE_URL: http://${{ secrets.GCP_VM_HOST }}
+          OAUTH_REDIRECT_BASE_URL: http://${{ secrets.GCP_VM_HOST }}:8000
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
           REGISTRY: ${{ env.REGISTRY }}
           GITHUB_ACTOR: ${{ github.actor }}
