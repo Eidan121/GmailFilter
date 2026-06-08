@@ -147,6 +147,29 @@ docker compose up --build
 | API | http://localhost:8000 |
 | Postgres | localhost:5432 |
 
+## ☁️ Deploying to Google Cloud (Compute Engine)
+
+CI/CD (`.github/workflows/docker-publish.yml`) builds images, pushes them to GHCR, then SSHes
+into a Compute Engine VM and runs `docker compose pull && up -d` to roll out the new version.
+
+**One-time VM setup:**
+
+1. Create a Compute Engine VM (Ubuntu 22.04, e2-small/medium, static external IP, allow HTTP/HTTPS)
+2. SSH in, install Docker + the Compose plugin
+3. `git clone` this repo into `~/GmailFilter` and copy your `.env` over (never commit it)
+4. Update your Google OAuth client's redirect URI to point at the VM's address
+5. (Recommended) put a domain + HTTPS in front (Caddy/nginx + Let's Encrypt) — Google requires
+   HTTPS redirect URIs for non-localhost OAuth clients
+
+**Required GitHub Actions secrets** for the deploy step (Settings → Secrets and variables → Actions):
+
+| Secret | Value |
+|---|---|
+| `GCP_VM_HOST` | VM's external IP or domain |
+| `GCP_VM_USER` | SSH username on the VM |
+| `GCP_VM_SSH_KEY` | Private SSH key with access to the VM |
+| `GHCR_TOKEN` | A GitHub PAT (or `GITHUB_TOKEN`) with `read:packages`, used by the VM to pull images |
+
 ## 🛠️ Local development (without Docker)
 
 <details>
