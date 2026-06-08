@@ -1,5 +1,6 @@
 services:
   backend:
+    image: ghcr.io/eidan121/gmailfilter-backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -13,9 +14,7 @@ services:
     restart: unless-stopped
 
   scanner:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ghcr.io/eidan121/gmailfilter-backend:latest
     command: ["uv", "run", "python", "-m", "app.scanner.daemon"]
     volumes:
       - gmail_data:/root/.gmail_filter_app
@@ -26,6 +25,7 @@ services:
       - backend
 
   frontend:
+    image: ghcr.io/eidan121/gmailfilter-frontend:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile
