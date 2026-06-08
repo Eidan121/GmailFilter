@@ -44,30 +44,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check required secrets are set (no values printed)
-        run: |
-          for name in GCP_SA_KEY GCP_PROJECT_ID GCP_VM_NAME GCP_VM_ZONE GCP_VM_USER GCP_VM_HOST GCP_SSH_PRIVATE_KEY GHCR_TOKEN ANTHROPIC_API_KEY GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET TOKEN_ENCRYPTION_KEY; do
-            value="${!name}"
-            if [ -n "$value" ]; then
-              echo "$name: SET (length ${#value})"
-            else
-              echo "$name: MISSING"
-            fi
-          done
-        env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-          GCP_VM_NAME: ${{ secrets.GCP_VM_NAME }}
-          GCP_VM_ZONE: ${{ secrets.GCP_VM_ZONE }}
-          GCP_VM_USER: ${{ secrets.GCP_VM_USER }}
-          GCP_VM_HOST: ${{ secrets.GCP_VM_HOST }}
-          GCP_SSH_PRIVATE_KEY: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
-          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          TOKEN_ENCRYPTION_KEY: ${{ secrets.TOKEN_ENCRYPTION_KEY }}
-
       - name: Copy docker-compose.yml to VM
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -80,20 +56,27 @@ jobs:
       - name: Deploy & inject secrets from GitHub Actions secrets
         uses: appleboy/ssh-action@v1.0.3
         env:
-          ENV_B64: ${{ toJSON(format('ANTHROPIC_API_KEY={0}\nGOOGLE_CLIENT_ID={1}\nGOOGLE_CLIENT_SECRET={2}\nTOKEN_ENCRYPTION_KEY={3}\n', secrets.ANTHROPIC_API_KEY, secrets.GOOGLE_CLIENT_ID, secrets.GOOGLE_CLIENT_SECRET, secrets.TOKEN_ENCRYPTION_KEY)) }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          TOKEN_ENCRYPTION_KEY: ${{ secrets.TOKEN_ENCRYPTION_KEY }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          REGISTRY: ${{ env.REGISTRY }}
+          GITHUB_ACTOR: ${{ github.actor }}
         with:
           host: ${{ secrets.GCP_VM_HOST }}
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
-          envs: ENV_B64,GHCR_TOKEN,REGISTRY,GITHUB_ACTOR
-          envs_GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
-          envs_REGISTRY: ${{ env.REGISTRY }}
-          envs_GITHUB_ACTOR: ${{ github.actor }}
+          envs: ANTHROPIC_API_KEY,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,TOKEN_ENCRYPTION_KEY,GHCR_TOKEN,REGISTRY,GITHUB_ACTOR
           script: |
             set -e
             mkdir -p ~/gmailfilter && cd ~/gmailfilter
-            ENV_CONTENT=$(printf '%s' "$ENV_B64" | sed -e 's/^"//' -e 's/"$//')
-            printf '%b' "$ENV_CONTENT" > .env
+            cat > .env <<EOF
+            ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY
+            GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
+            GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
+            TOKEN_ENCRYPTION_KEY=$TOKEN_ENCRYPTION_KEY
+            EOF
             chmod 600 .env
             echo "$GHCR_TOKEN" | docker login "$REGISTRY" -u "$GITHUB_ACTOR" --password-stdin
             docker compose pull
