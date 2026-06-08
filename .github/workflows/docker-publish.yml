@@ -60,6 +60,7 @@ jobs:
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           TOKEN_ENCRYPTION_KEY: ${{ secrets.TOKEN_ENCRYPTION_KEY }}
+          OAUTH_REDIRECT_BASE_URL: http://${{ secrets.GCP_VM_HOST }}:8000
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
           REGISTRY: ${{ env.REGISTRY }}
           GITHUB_ACTOR: ${{ github.actor }}
@@ -67,7 +68,7 @@ jobs:
           host: ${{ secrets.GCP_VM_HOST }}
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
-          envs: ANTHROPIC_API_KEY,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,TOKEN_ENCRYPTION_KEY,GHCR_TOKEN,REGISTRY,GITHUB_ACTOR
+          envs: ANTHROPIC_API_KEY,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,TOKEN_ENCRYPTION_KEY,OAUTH_REDIRECT_BASE_URL,GHCR_TOKEN,REGISTRY,GITHUB_ACTOR
           script: |
             set -e
             mkdir -p ~/gmailfilter && cd ~/gmailfilter
@@ -76,6 +77,7 @@ jobs:
             GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
             GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
             TOKEN_ENCRYPTION_KEY=$TOKEN_ENCRYPTION_KEY
+            OAUTH_REDIRECT_BASE_URL=$OAUTH_REDIRECT_BASE_URL
             EOF
             chmod 600 .env
             echo "$GHCR_TOKEN" | docker login "$REGISTRY" -u "$GITHUB_ACTOR" --password-stdin

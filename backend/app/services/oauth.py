@@ -16,7 +16,7 @@ SCOPES = [
     "openid",
 ]
 
-REDIRECT_URI = "http://localhost:8000/api/accounts/callback"
+REDIRECT_URI = f"{settings.oauth_redirect_base_url}/api/accounts/callback"
 
 # In-memory store for pending OAuth states (state → flow serialization)
 _pending_flows: dict[str, dict] = {}

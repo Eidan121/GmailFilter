@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     api_host: str = "0.0.0.0"
     api_port: int = 8000
     frontend_origin: str = "http://localhost:5173"
+    # Public base URL the backend is reachable at, used to build the OAuth
+    # redirect URI (must match a redirect URI registered in Google Cloud
+    # Console). Override in production, e.g. http://<vm-host>:8000
+    oauth_redirect_base_url: str = "http://localhost:8000"
 
     flood_threshold: int = 20
     scan_interval_hours: int = 6
