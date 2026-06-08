@@ -149,14 +149,17 @@ docker compose up --build
 
 ## ☁️ Deploying to Google Cloud (Compute Engine)
 
-CI/CD (`.github/workflows/docker-publish.yml`) builds images, pushes them to GHCR, then SSHes
-into a Compute Engine VM and runs `docker compose pull && up -d` to roll out the new version.
+CI/CD (`.github/workflows/docker-publish.yml`) builds images and pushes them to GHCR, then
+**copies just `docker-compose.yml`** to a Compute Engine VM (via `scp`) and runs
+`docker compose pull && up -d` over SSH. The VM never needs git or your source code — it's a
+pure runtime that pulls pre-built images straight from the registry.
 
 **One-time VM setup:**
 
 1. Create a Compute Engine VM (Ubuntu 22.04, e2-small/medium, static external IP, allow HTTP/HTTPS)
 2. SSH in, install Docker + the Compose plugin
-3. `git clone` this repo into `~/GmailFilter` and copy your `.env` over (never commit it)
+3. Create `~/gmailfilter/.env` by hand with your secrets (`ANTHROPIC_API_KEY`,
+   `GOOGLE_CLIENT_ID`/`SECRET`, etc. — same values as your local `.env`, never committed to git)
 4. Update your Google OAuth client's redirect URI to point at the VM's address
 5. (Recommended) put a domain + HTTPS in front (Caddy/nginx + Let's Encrypt) — Google requires
    HTTPS redirect URIs for non-localhost OAuth clients

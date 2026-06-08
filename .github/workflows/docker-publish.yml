@@ -40,18 +40,24 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to Compute Engine VM
+      - name: Copy docker-compose.yml to VM
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.GCP_VM_HOST }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_VM_SSH_KEY }}
+          source: "docker-compose.yml"
+          target: "~/gmailfilter"
+          strip_components: 0
+
+      - name: Pull images and restart on Compute Engine VM
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.GCP_VM_HOST }}
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_VM_SSH_KEY }}
           script: |
-            if [ ! -d ~/GmailFilter/.git ]; then
-              git clone https://github.com/Eidan121/GmailFilter.git ~/GmailFilter
-            fi
-            cd ~/GmailFilter
-            git pull
+            cd ~/gmailfilter
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
             docker compose pull
             docker compose up -d
