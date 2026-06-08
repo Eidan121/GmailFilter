@@ -39,6 +39,8 @@ jobs:
     needs: build-and-push
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    env:
+      CLOUDSDK_CORE_DISABLE_PROMPTS: "1"
     steps:
       - uses: actions/checkout@v4
 
