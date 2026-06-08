@@ -40,6 +40,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - name: Copy docker-compose.yml to VM
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -79,4 +81,3 @@ jobs:
           echo "## 🚀 Deployed" >> "$GITHUB_STEP_SUMMARY"
           echo "- Frontend: http://${{ secrets.GCP_VM_HOST }}" >> "$GITHUB_STEP_SUMMARY"
           echo "- Backend API: http://${{ secrets.GCP_VM_HOST }}:8000/docs" >> "$GITHUB_STEP_SUMMARY"
-            docker image prune -f
