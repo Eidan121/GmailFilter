@@ -1,0 +1,144 @@
+.dashboard {
+  max-width: 900px;
+  animation: fade-in 0.3s ease;
+}
+
+.dashboard__hero {
+  margin-bottom: 40px;
+}
+
+.dashboard__heading {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, #f0f0f5 60%, #e53e3e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+  line-height: 1.1;
+}
+
+.dashboard__subheading {
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  margin: 0;
+}
+
+.dashboard__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.dashboard__stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  box-shadow: 0 0 40px rgba(229, 62, 62, 0.04);
+}
+
+.dashboard__stat-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(229, 62, 62, 0.3);
+  box-shadow: 0 0 40px rgba(229, 62, 62, 0.1);
+}
+
+.dashboard__stat-card--accent {
+  border-color: var(--red);
+}
+
+.dashboard__stat-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+}
+
+.dashboard__stat-card--accent .dashboard__stat-value {
+  color: var(--red);
+}
+
+.dashboard__stat-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.dashboard__empty {
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 48px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.dashboard__empty-icon {
+  font-size: 2.5rem;
+  color: var(--red);
+  margin: 0 0 8px;
+}
+
+.dashboard__empty-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+.dashboard__empty-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0 0 16px;
+  max-width: 360px;
+}
+
+.dashboard__cta {
+  background: var(--red);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.dashboard__cta:hover {
+  background: var(--red-hover);
+  color: #fff;
+}
+
+.dashboard__scan-bar {
+  margin-top: 8px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.dashboard__scan-running {
+  color: var(--dot-idle);
+}

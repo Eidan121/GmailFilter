@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+dist/
+.pytest_cache/
+
+# uv
+uv.lock
+
+# Node
+node_modules/
+frontend/dist/
+
+# pnpm
+.pnpm-store/
+
+# Env
+.env
+*.local
+
+# Credentials — never commit (legacy file-based OAuth setup; tokens now live encrypted in the DB)
+client_secrets.json
+token.key
+
+# SQLite
+*.db
+*.sqlite
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log

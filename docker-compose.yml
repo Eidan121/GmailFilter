@@ -1,0 +1,39 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - gmail_data:/root/.gmail_filter_app
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - FRONTEND_ORIGIN=http://localhost:5173
+    restart: unless-stopped
+
+  scanner:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: ["uv", "run", "python", "-m", "app.scanner.daemon"]
+    volumes:
+      - gmail_data:/root/.gmail_filter_app
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    restart: unless-stopped
+    depends_on:
+      - backend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  gmail_data:

@@ -1,0 +1,99 @@
+.label-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 0 40px rgba(229, 62, 62, 0.04);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.label-card:not(.label-card--system):hover {
+  border-color: rgba(229, 62, 62, 0.3);
+  box-shadow: 0 0 40px rgba(229, 62, 62, 0.08);
+}
+
+.label-card--system {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.label-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.label-card__color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.label-card__name {
+  flex: 1;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.label-card__delete {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  font-size: 11px !important;
+  padding: 2px 6px !important;
+}
+
+.label-card:hover .label-card__delete {
+  opacity: 1;
+}
+
+.label-card__delete--confirm {
+  opacity: 1 !important;
+}
+
+.label-card__stats {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+  padding-left: 22px;
+}
+
+.label-card__count {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.label-card__count-label {
+  color: var(--muted);
+}
+
+.label-card__sep {
+  color: var(--border);
+}
+
+.label-card__unread {
+  color: var(--red-hover);
+}
+
+.label-card__system-badge {
+  align-self: flex-start;
+  margin-left: 22px;
+  padding: 1px 6px;
+  background: rgba(112, 112, 160, 0.1);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}

@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap');
+
+:root {
+  --bg:           #0a0a0f;
+  --surface:      #13131a;
+  --surface-2:    #1a1a26;
+  --border:       #1e1e2e;
+  --border-2:     #2a2a3e;
+
+  --red:          #e53e3e;
+  --red-hover:    #fc5c5c;
+  --red-dim:      rgba(229,62,62,0.15);
+  --red-glow:     rgba(229,62,62,0.3);
+
+  --text:         #f0f0f5;
+  --text-muted:   #7070a0;
+  --text-faint:   #3a3a5c;
+
+  --dot-active:   #48bb78;
+  --dot-idle:     #ed8936;
+  --dot-error:    #fc5c5c;
+
+  --muted:        #7070a0;
+
+  --sidebar-w:    220px;
+  --radius:       10px;
+  --radius-sm:    6px;
+  --transition:   150ms ease;
+
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color-scheme: dark;
+  color: var(--text);
+  background-color: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Syne', sans-serif;
+  margin: 0;
+}
+
+a { color: var(--red); text-decoration: none; }
+a:hover { color: var(--red-hover); }
+
+button {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: background var(--transition), color var(--transition), transform var(--transition);
+}
+button:active { transform: scale(0.97); }
+
+input, select, textarea {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  outline: none;
+  width: 100%;
+  transition: border-color var(--transition);
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--red);
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}

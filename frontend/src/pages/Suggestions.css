@@ -1,0 +1,4 @@
+.suggestions-page {
+  max-width: 720px;
+  animation: fade-in 0.25s ease;
+}

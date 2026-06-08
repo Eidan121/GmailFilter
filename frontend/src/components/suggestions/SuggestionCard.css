@@ -1,0 +1,98 @@
+.suggestion-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--red);
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 0 40px rgba(229, 62, 62, 0.05);
+  transition: all 0.15s ease;
+}
+
+.suggestion-card:hover {
+  box-shadow: 0 0 40px rgba(229, 62, 62, 0.1);
+}
+
+.suggestion-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.suggestion-card__sender {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.suggestion-card__email {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.suggestion-card__domain {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.suggestion-card__action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+}
+
+.suggestion-card__action-label {
+  color: var(--muted);
+}
+
+.suggestion-card__action-value {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.suggestion-card__rationale {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+.suggestion-card__rationale-toggle {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.suggestion-card__rationale-toggle:hover {
+  color: var(--text);
+}
+
+.suggestion-card__rationale-text {
+  margin: 8px 0 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.suggestion-card__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

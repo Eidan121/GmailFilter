@@ -1,0 +1,30 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.badge--red {
+  background: rgba(229, 62, 62, 0.15);
+  color: var(--red-hover);
+}
+
+.badge--green {
+  background: rgba(72, 187, 120, 0.15);
+  color: #48bb78;
+}
+
+.badge--amber {
+  background: rgba(237, 137, 54, 0.15);
+  color: #ed8936;
+}
+
+.badge--muted {
+  background: rgba(112, 112, 160, 0.15);
+  color: var(--muted);
+}
