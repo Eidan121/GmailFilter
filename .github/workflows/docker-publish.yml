@@ -44,6 +44,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check required secrets are set (no values printed)
+        run: |
+          for name in GCP_SA_KEY GCP_PROJECT_ID GCP_VM_NAME GCP_VM_ZONE GCP_VM_USER GCP_VM_HOST GHCR_TOKEN ANTHROPIC_API_KEY GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET TOKEN_ENCRYPTION_KEY; do
+            value="${!name}"
+            if [ -n "$value" ]; then
+              echo "$name: SET (length ${#value})"
+            else
+              echo "$name: MISSING"
+            fi
+          done
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_VM_NAME: ${{ secrets.GCP_VM_NAME }}
+          GCP_VM_ZONE: ${{ secrets.GCP_VM_ZONE }}
+          GCP_VM_USER: ${{ secrets.GCP_VM_USER }}
+          GCP_VM_HOST: ${{ secrets.GCP_VM_HOST }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          TOKEN_ENCRYPTION_KEY: ${{ secrets.TOKEN_ENCRYPTION_KEY }}
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
