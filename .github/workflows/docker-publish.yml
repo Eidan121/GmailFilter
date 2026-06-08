@@ -53,3 +53,21 @@ jobs:
             docker compose pull
             docker compose up -d
             docker image prune -f
+
+      - name: Verify deployed ports are reachable
+        run: |
+          for port in 80 8000; do
+            if nc -z -w5 "${{ secrets.GCP_VM_HOST }}" "$port"; then
+              echo "✅ Port $port is open on ${{ secrets.GCP_VM_HOST }}"
+            else
+              echo "❌ Port $port is NOT reachable on ${{ secrets.GCP_VM_HOST }}"
+              exit 1
+            fi
+          done
+
+      - name: Print deployed service links
+        run: |
+          echo "## 🚀 Deployed" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Frontend: http://${{ secrets.GCP_VM_HOST }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Backend API: http://${{ secrets.GCP_VM_HOST }}:8000/docs" >> "$GITHUB_STEP_SUMMARY"
+            docker image prune -f
